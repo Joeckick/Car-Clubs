@@ -5,6 +5,19 @@
     background-color: var(--color-background-alt);
 }
 
+/* Results count styles */
+.results__count span#results-count {
+    display: block;
+    margin-top: var(--spacing-xs);
+    color: var(--color-text-light);
+}
+
+.results-detail {
+    font-size: 0.9em;
+    color: var(--color-text-light);
+    margin-left: var(--spacing-xs);
+}
+
 .search-container {
     display: grid;
     grid-template-columns: 280px 1fr;
