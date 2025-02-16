@@ -2,108 +2,112 @@
 const searchForm = document.querySelector('.search-form');
 const searchInput = document.querySelector('.search-form__input');
 
-// Sample car data (in a real app, this would come from an API)
-const sampleCars = [
-    {
-        id: 1,
-        make: 'Tesla',
-        model: 'Model 3',
-        year: 2022,
-        price: 75,
-        location: 'London, UK',
-        image: '/assets/images/cars/tesla-model-3.jpg',
-        features: ['Electric', 'Autopilot', '5 Seats'],
-        rating: 4.9,
-        reviews: 128
-    },
-    {
-        id: 2,
-        make: 'BMW',
-        model: 'i3',
-        year: 2021,
-        price: 55,
-        location: 'Manchester, UK',
-        image: '/assets/images/cars/bmw-i3.jpg',
-        features: ['Electric', 'Parking Assist', '4 Seats'],
-        rating: 4.7,
-        reviews: 89
-    },
-    {
-        id: 3,
-        make: 'Volkswagen',
-        model: 'ID.4',
-        year: 2022,
-        price: 65,
-        location: 'Birmingham, UK',
-        image: '/assets/images/cars/vw-id4.jpg',
-        features: ['Electric', 'Lane Assist', '5 Seats'],
-        rating: 4.8,
-        reviews: 94
-    },
-    {
-        id: 4,
-        make: 'Toyota',
-        model: 'Prius',
-        year: 2021,
-        price: 45,
-        location: 'Leeds, UK',
-        image: '/assets/images/cars/toyota-prius.jpg',
-        features: ['Hybrid', 'Backup Camera', '5 Seats'],
-        rating: 4.6,
-        reviews: 156
-    },
-    {
-        id: 5,
-        make: 'Nissan',
-        model: 'Leaf',
-        year: 2022,
-        price: 50,
-        location: 'Bristol, UK',
-        image: '/assets/images/cars/nissan-leaf.jpg',
-        features: ['Electric', 'ProPilot', '5 Seats'],
-        rating: 4.7,
-        reviews: 112
-    },
-    {
-        id: 6,
-        make: 'Hyundai',
-        model: 'IONIQ 5',
-        year: 2022,
-        price: 70,
-        location: 'Glasgow, UK',
-        image: '/assets/images/cars/hyundai-ioniq5.jpg',
-        features: ['Electric', 'Highway Assist', '5 Seats'],
-        rating: 4.9,
-        reviews: 76
-    },
-    {
-        id: 7,
-        make: 'Mini',
-        model: 'Cooper SE',
-        year: 2021,
-        price: 60,
-        location: 'Edinburgh, UK',
-        image: '/assets/images/cars/mini-cooper-se.jpg',
-        features: ['Electric', 'Parking Assist', '4 Seats'],
-        rating: 4.8,
-        reviews: 83
-    },
-    {
-        id: 8,
-        make: 'Kia',
-        model: 'e-Niro',
-        year: 2022,
-        price: 55,
-        location: 'Cardiff, UK',
-        image: '/assets/images/cars/kia-eniro.jpg',
-        features: ['Electric', 'Lane Keep Assist', '5 Seats'],
-        rating: 4.7,
-        reviews: 97
-    }
+// Car data generation helpers
+const carMakes = [
+    { make: 'Tesla', models: ['Model 3', 'Model Y', 'Model S', 'Model X'], type: 'Electric' },
+    { make: 'BMW', models: ['i3', 'i4', '330e', 'X5'], type: 'Hybrid' },
+    { make: 'Volkswagen', models: ['ID.4', 'ID.3', 'e-Golf', 'Passat GTE'], type: 'Electric' },
+    { make: 'Toyota', models: ['Prius', 'RAV4', 'Corolla Hybrid', 'Camry'], type: 'Hybrid' },
+    { make: 'Nissan', models: ['Leaf', 'Ariya', 'Qashqai', 'Juke'], type: 'Electric' },
+    { make: 'Hyundai', models: ['IONIQ 5', 'Kona Electric', 'Tucson PHEV'], type: 'Electric' },
+    { make: 'Mini', models: ['Cooper SE', 'Countryman PHEV'], type: 'Electric' },
+    { make: 'Kia', models: ['e-Niro', 'EV6', 'Soul EV', 'Sportage'], type: 'Electric' },
+    { make: 'Audi', models: ['e-tron', 'Q4 e-tron', 'A3 TFSI e'], type: 'Electric' },
+    { make: 'Mercedes', models: ['EQC', 'EQA', 'EQS', 'A250e'], type: 'Electric' }
 ];
+
+const cities = [
+    { name: 'London', areas: ['E1', 'E2', 'E14', 'N1', 'SE1', 'SW1', 'W1', 'WC1', 'EC1'], center: { lat: 51.5074, lng: -0.1278 } },
+    { name: 'Manchester', areas: ['M1', 'M2', 'M3', 'M4', 'M15'], center: { lat: 53.4808, lng: -2.2426 } },
+    { name: 'Birmingham', areas: ['B1', 'B2', 'B3', 'B4', 'B5'], center: { lat: 52.4862, lng: -1.8904 } },
+    { name: 'Leeds', areas: ['LS1', 'LS2', 'LS3', 'LS4', 'LS6'], center: { lat: 53.8008, lng: -1.5491 } },
+    { name: 'Bristol', areas: ['BS1', 'BS2', 'BS3', 'BS4', 'BS5'], center: { lat: 51.4545, lng: -2.5879 } },
+    { name: 'Glasgow', areas: ['G1', 'G2', 'G3', 'G4', 'G5'], center: { lat: 55.8642, lng: -4.2518 } },
+    { name: 'Edinburgh', areas: ['EH1', 'EH2', 'EH3', 'EH8', 'EH9'], center: { lat: 55.9533, lng: -3.1883 } },
+    { name: 'Cardiff', areas: ['CF10', 'CF11', 'CF14', 'CF15', 'CF23'], center: { lat: 51.4816, lng: -3.1791 } },
+    { name: 'Liverpool', areas: ['L1', 'L2', 'L3', 'L4', 'L5'], center: { lat: 53.4084, lng: -2.9916 } },
+    { name: 'Newcastle', areas: ['NE1', 'NE2', 'NE3', 'NE4', 'NE5'], center: { lat: 54.9783, lng: -1.6178 } }
+];
+
+const features = [
+    ['Autopilot', 'Lane Assist', 'Parking Assist', 'Backup Camera'],
+    ['ProPilot', 'Highway Assist', '360° Camera', 'Blind Spot Detection'],
+    ['Self Parking', 'Cruise Control', 'Emergency Braking', 'Lane Departure Warning'],
+    ['Traffic Sign Recognition', 'Adaptive Cruise', 'Night Vision', 'Head-up Display']
+];
+
+function generateSampleCars(count) {
+    const cars = [];
+    for (let i = 1; i <= count; i++) {
+        // Use ID as seed for consistent random generation
+        const seed = i;
+        
+        // Deterministic selections based on ID
+        const makeIndex = seed % carMakes.length;
+        const makeData = carMakes[makeIndex];
+        const modelIndex = Math.floor(seed / carMakes.length) % makeData.models.length;
+        const model = makeData.models[modelIndex];
+        
+        // Deterministic city selection
+        const cityIndex = Math.floor(seed / (carMakes.length * 4)) % cities.length;
+        const city = cities[cityIndex];
+        const areaIndex = seed % city.areas.length;
+        const area = city.areas[areaIndex];
+        
+        // Deterministic coordinates (still within ~5km of city center)
+        const latOffset = ((seed % 100) / 1000) - 0.05;
+        const lngOffset = ((Math.floor(seed / 100) % 100) / 1000) - 0.05;
+        const lat = city.center.lat + latOffset;
+        const lng = city.center.lng + lngOffset;
+        
+        // Deterministic features
+        const featureSetIndex = seed % features.length;
+        const featureSet = features[featureSetIndex];
+        const featureCount = (seed % 3) + 1;
+        const carFeatures = [makeData.type, `${(seed % 2) + 4} Seats`]
+            .concat(featureSet.slice(0, featureCount));
+        
+        // Deterministic price based on make and type
+        const basePrice = makeData.make === 'Tesla' || makeData.make === 'Mercedes' ? 75 : 45;
+        const priceVariation = seed % 30;
+        const price = basePrice + priceVariation;
+        
+        // Deterministic rating and reviews
+        const rating = (4 + (seed % 10) / 10).toFixed(1);
+        const reviews = 50 + (seed % 150);
+        
+        const imagePath = `https://source.unsplash.com/400x300/?car,${makeData.make.toLowerCase()}-${model.toLowerCase().replace(/\s+/g, '-')}`;
+        
+        cars.push({
+            id: i,
+            make: makeData.make,
+            model: model,
+            year: 2021 + (seed % 3),
+            price: price,
+            location: `${city.name}, UK`,
+            postcode: area,
+            areas: city.areas,
+            coordinates: { lat, lng },
+            image: imagePath,
+            features: carFeatures,
+            rating: parseFloat(rating),
+            reviews: reviews
+        });
+    }
+    return cars;
+}
+
+// Generate 500 sample cars
+console.log('Starting to generate sample cars...');
+const sampleCars = generateSampleCars(500);
+console.log('Generated sample cars array:', sampleCars);
+console.log('First car example:', sampleCars[0]);
+console.log('Total cars generated:', sampleCars.length);
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM Content Loaded in main.js');
+    console.log('Sample cars available:', sampleCars.length);
     initializeApp();
 });
 
@@ -141,14 +145,37 @@ function initializeApp() {
 
 function handleSearch(e) {
     e.preventDefault();
-    const searchTerm = searchInput.value.trim().toLowerCase();
+    const searchTerm = searchInput.value.trim().toUpperCase();
     
-    // In a real app, this would make an API call
-    // For now, we'll just log the search term
-    console.log('Searching for:', searchTerm);
+    // Find cars in the searched area
+    const matchingCars = findCarsInArea(searchTerm);
     
-    // Redirect to search results page (to be implemented)
-    // window.location.href = `/search?q=${encodeURIComponent(searchTerm)}`;
+    // Redirect to search results page with the matching cars
+    const searchParams = new URLSearchParams();
+    searchParams.set('location', searchTerm);
+    searchParams.set('cars', JSON.stringify(matchingCars.map(car => car.id)));
+    
+    window.location.href = `search.html?${searchParams.toString()}`;
+}
+
+function findCarsInArea(postcode) {
+    // Remove spaces and convert to uppercase for consistent comparison
+    const cleanPostcode = postcode.replace(/\s+/g, '').toUpperCase();
+    
+    // First, try exact postcode match
+    const exactMatches = sampleCars.filter(car => 
+        car.postcode.replace(/\s+/g, '').toUpperCase() === cleanPostcode
+    );
+    
+    if (exactMatches.length > 0) {
+        return exactMatches;
+    }
+    
+    // If no exact matches, try matching the outcode (first part of postcode)
+    const outcode = cleanPostcode.split(' ')[0];
+    return sampleCars.filter(car => 
+        car.areas.some(area => area.replace(/\s+/g, '').toUpperCase().startsWith(outcode))
+    );
 }
 
 // Utility functions
@@ -168,10 +195,13 @@ function toggleMobileMenu() {
     }
 }
 
-// Export functions for use in other modules
+// Export functions and data for use in other modules
+console.log('Exporting from main.js:', { sampleCars, handleSearch, formatPrice, formatLocation, toggleMobileMenu, findCarsInArea });
 export {
+    sampleCars,
     handleSearch,
     formatPrice,
     formatLocation,
-    toggleMobileMenu
+    toggleMobileMenu,
+    findCarsInArea
 }; 

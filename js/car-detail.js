@@ -1,3 +1,5 @@
+import { sampleCars } from './main.js';
+
 // DOM Elements
 const galleryThumbs = document.querySelectorAll('.gallery__thumb');
 const mainImage = document.querySelector('.gallery__image');
@@ -8,13 +10,26 @@ const totalPrice = document.querySelector('.total span:last-child');
 const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
 const navLinks = document.querySelector('.nav__links');
 
+// Additional DOM Elements for car details
+const pageTitle = document.querySelector('title');
+const carTitle = document.querySelector('.car-detail__header h1');
+const carRating = document.querySelector('.car-detail__rating .rating');
+const carReviews = document.querySelector('.car-detail__rating .reviews');
+const carLocation = document.querySelector('.car-detail__location');
+const carPrice = document.querySelector('.car-detail__price .amount');
+const carFeatures = document.querySelector('.features-grid');
+const carDescription = document.querySelector('.car-detail__description p');
+const dailyRate = document.querySelector('.summary-item:first-child span:last-child');
+const badge = document.querySelector('.gallery__badge');
+
 // Constants
-const DAILY_RATE = 75;
+let DAILY_RATE = 75;
 const MIN_RENTAL_HOURS = 1;
 const MAX_RENTAL_DAYS = 30;
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
+    loadCarDetails();
     initializeCarDetail();
 });
 
@@ -38,6 +53,114 @@ if (mobileMenuToggle) {
 }
 
 // Functions
+function loadCarDetails() {
+    // Get car ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const carId = parseInt(urlParams.get('id'));
+    
+    // Find car in sample data
+    const car = sampleCars.find(c => c.id === carId);
+    
+    // If no car found, redirect to search page
+    if (!car) {
+        window.location.href = 'search.html';
+        return;
+    }
+    
+    // Update page title
+    pageTitle.textContent = `${car.make} ${car.model} - Car Clubs`;
+    
+    // Update car details
+    carTitle.textContent = `${car.make} ${car.model} ${car.year}`;
+    carRating.textContent = `★ ${car.rating}`;
+    carReviews.textContent = `(${car.reviews} reviews)`;
+    carLocation.textContent = car.location;
+    carPrice.textContent = `£${car.price}`;
+    DAILY_RATE = car.price;
+    dailyRate.textContent = `£${car.price}`;
+    
+    // Update main image and gallery
+    mainImage.src = car.image;
+    mainImage.alt = `${car.make} ${car.model}`;
+    
+    // Update gallery thumbs (using the same image for now)
+    galleryThumbs.forEach(thumb => {
+        const img = thumb.querySelector('img');
+        img.src = car.image;
+        img.alt = `${car.make} ${car.model}`;
+    });
+    
+    // Update features
+    carFeatures.innerHTML = car.features.map(feature => `
+        <div class="feature">
+            <span class="feature__icon">${getFeatureIcon(feature)}</span>
+            <span class="feature__name">${feature}</span>
+        </div>
+    `).join('');
+    
+    // Update description
+    carDescription.textContent = generateDescription(car);
+    
+    // Update badge
+    if (car.features.includes('Electric')) {
+        badge.textContent = '⚡ Electric';
+        badge.style.display = 'block';
+    } else if (car.features.includes('Hybrid')) {
+        badge.textContent = '🔋 Hybrid';
+        badge.style.display = 'block';
+    } else {
+        badge.style.display = 'none';
+    }
+    
+    // Update review section
+    updateReviewSection(car);
+}
+
+function getFeatureIcon(feature) {
+    const iconMap = {
+        'Electric': '⚡',
+        'Hybrid': '🔋',
+        'Autopilot': '🚗',
+        'Lane Assist': '🛣️',
+        'Parking Assist': '🅿️',
+        'Backup Camera': '📸',
+        'ProPilot': '🤖',
+        'Highway Assist': '🛣️',
+        '360° Camera': '🎥',
+        'Blind Spot Detection': '👁️',
+        'Self Parking': '🅿️',
+        'Cruise Control': '⚡',
+        'Emergency Braking': '🛑',
+        'Lane Departure Warning': '⚠️',
+        'Traffic Sign Recognition': '🚸',
+        'Adaptive Cruise': '🚗',
+        'Night Vision': '🌙',
+        'Head-up Display': '📺'
+    };
+    
+    if (feature.includes('Seats')) return '👥';
+    return iconMap[feature] || '✨';
+}
+
+function generateDescription(car) {
+    const descriptions = {
+        'Electric': `Experience the future of driving with this ${car.make} ${car.model}. This all-electric vehicle comes with ${car.features.join(', ')}, making your journey safer and more comfortable.`,
+        'Hybrid': `Drive efficiently with this ${car.make} ${car.model}. This hybrid vehicle combines the best of both worlds with features like ${car.features.join(', ')}.`,
+        'default': `Experience the excellence of this ${car.make} ${car.model}. Equipped with ${car.features.join(', ')}, this car offers both comfort and performance.`
+    };
+    
+    const type = car.features.find(f => ['Electric', 'Hybrid'].includes(f)) || 'default';
+    return descriptions[type];
+}
+
+function updateReviewSection(car) {
+    const ratingLarge = document.querySelector('.rating-large');
+    const ratingCount = document.querySelector('.rating-count');
+    
+    if (ratingLarge) ratingLarge.textContent = car.rating;
+    if (ratingCount) ratingCount.textContent = `${car.reviews} reviews`;
+}
+
 function initializeCarDetail() {
     // Set minimum dates for booking
     const now = new Date();

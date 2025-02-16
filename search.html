@@ -12,13 +12,13 @@
     <header class="header">
         <nav class="nav">
             <div class="nav__logo">
-                <a href="/">Car Clubs</a>
+                <a href="index.html">Car Clubs</a>
             </div>
             <div class="nav__links">
-                <a href="/browse">Browse Cars</a>
-                <a href="/how-it-works">How it Works</a>
-                <a href="/login" class="btn btn--secondary">Log in</a>
-                <a href="/signup" class="btn btn--primary">Sign up</a>
+                <a href="search.html">Browse Cars</a>
+                <a href="index.html#how-it-works">How it Works</a>
+                <a href="signin.html" class="btn btn--secondary">Log in</a>
+                <a href="signup.html" class="btn btn--primary">Sign up</a>
             </div>
             <button class="mobile-menu-toggle" aria-label="Toggle menu">
                 <span></span>
@@ -83,27 +83,37 @@
                         </label>
                     </div>
                 </div>
+
+                <div class="filter-group">
+                    <h3>View Options</h3>
+                    <div class="view-toggle">
+                        <button class="btn btn--secondary active" data-view="grid">Grid View</button>
+                        <button class="btn btn--secondary" data-view="map">Map View</button>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h3>Sort By</h3>
+                    <select id="sort" class="sort-select">
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="rating">Highest Rated</option>
+                        <option value="distance">Nearest to You</option>
+                    </select>
+                </div>
             </aside>
 
             <section class="results">
                 <div class="results__header">
                     <div class="results__count">
-                        <h2>Available Cars</h2>
-                        <span id="results-count">8 cars found</span>
-                    </div>
-                    <div class="results__sort">
-                        <label for="sort">Sort by:</label>
-                        <select id="sort" class="sort-select">
-                            <option value="price-asc">Price: Low to High</option>
-                            <option value="price-desc">Price: High to Low</option>
-                            <option value="rating">Top Rated</option>
-                            <option value="reviews">Most Reviews</option>
-                        </select>
+                        <h2>Cars near you</h2>
+                        <span id="results-count">0 cars found</span>
                     </div>
                 </div>
 
-                <div class="car-grid" id="car-results">
-                    <!-- Car cards will be populated by JavaScript -->
+                <div id="view-container">
+                    <div id="car-results" class="car-grid active"></div>
+                    <div id="map-view" class="map-view"></div>
                 </div>
             </section>
         </div>
@@ -136,6 +146,14 @@
         </article>
     </template>
 
+    <!-- Leaflet CSS and JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+    <script src="js/main.js" type="module"></script>
     <script src="js/search.js" type="module"></script>
 </body>
 </html> 

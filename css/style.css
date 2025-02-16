@@ -268,7 +268,106 @@ p {
     color: white;
 }
 
-/* Responsive design */
+/* View Toggle */
+.view-toggle {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.view-toggle button {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-border);
+    background: var(--color-background);
+    color: var(--color-text);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-toggle button.active {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+/* View Container */
+#view-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+}
+
+.car-grid,
+.map-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.car-grid.active,
+.map-view.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Map View */
+.map-view {
+    height: 600px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Map Info Window */
+.map-info-window {
+    padding: 1rem;
+    max-width: 300px;
+}
+
+.map-info-window img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.map-info-window h3 {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+    color: var(--color-text);
+}
+
+.map-info-window .price {
+    font-weight: bold;
+    color: var(--color-primary);
+    margin: 0.25rem 0;
+}
+
+.map-info-window .location {
+    color: var(--color-text-light);
+    margin: 0.25rem 0;
+}
+
+.map-info-window .rating {
+    color: var(--color-text);
+    margin: 0.5rem 0;
+}
+
+.map-info-window .btn {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     html {
         font-size: 14px;
@@ -285,5 +384,106 @@ p {
     .features__grid,
     .steps {
         grid-template-columns: 1fr;
+    }
+
+    .view-toggle {
+        margin-bottom: 1rem;
+    }
+    
+    .map-view {
+        height: 400px;
+    }
+    
+    .map-info-window {
+        max-width: 250px;
+    }
+    
+    .map-info-window img {
+        height: 120px;
+    }
+}
+
+/* Custom Map Markers */
+.custom-marker {
+    background: none;
+    border: none;
+}
+
+.marker {
+    width: 32px;
+    height: 32px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.2s ease;
+}
+
+.marker:hover {
+    transform: scale(1.1);
+}
+
+.marker.electric {
+    background: var(--color-success);
+}
+
+.marker.hybrid {
+    background: #3498db;
+}
+
+/* Leaflet Popup Styles */
+.leaflet-popup-content {
+    margin: 0;
+    padding: 0;
+    min-width: 250px;
+}
+
+.leaflet-popup-content-wrapper {
+    padding: 0;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.car-popup .leaflet-popup-content-wrapper {
+    background: var(--color-background);
+}
+
+.car-popup .leaflet-popup-tip {
+    background: var(--color-background);
+}
+
+.leaflet-popup-content .map-info-window {
+    padding: 0;
+}
+
+.leaflet-popup-content .map-info-window img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    margin: 0;
+}
+
+.leaflet-popup-content .map-info-window h3,
+.leaflet-popup-content .map-info-window p,
+.leaflet-popup-content .map-info-window div {
+    margin: var(--spacing-sm) var(--spacing-md);
+}
+
+.leaflet-popup-content .map-info-window button {
+    margin: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+    width: calc(100% - var(--spacing-md) * 2);
+}
+
+@media (max-width: 768px) {
+    .leaflet-popup-content {
+        min-width: 200px;
+    }
+    
+    .leaflet-popup-content .map-info-window img {
+        height: 120px;
     }
 } 
