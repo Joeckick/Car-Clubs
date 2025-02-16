@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tesla Model 3 - Car Clubs</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/car-detail.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav__logo">
+                <a href="/">Car Clubs</a>
+            </div>
+            <div class="nav__links">
+                <a href="/browse">Browse Cars</a>
+                <a href="/how-it-works">How it Works</a>
+                <a href="/login" class="btn btn--secondary">Log in</a>
+                <a href="/signup" class="btn btn--primary">Sign up</a>
+            </div>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="car-detail">
+        <div class="car-detail__container">
+            <div class="car-detail__gallery">
+                <div class="gallery__main">
+                    <img src="/assets/images/cars/tesla-model-3.jpg" alt="Tesla Model 3" class="gallery__image">
+                    <div class="gallery__badge">⚡ Electric</div>
+                </div>
+                <div class="gallery__thumbs">
+                    <button class="gallery__thumb active">
+                        <img src="/assets/images/cars/tesla-model-3.jpg" alt="Tesla Model 3 - Front">
+                    </button>
+                    <button class="gallery__thumb">
+                        <img src="/assets/images/cars/tesla-model-3-interior.jpg" alt="Tesla Model 3 - Interior">
+                    </button>
+                    <button class="gallery__thumb">
+                        <img src="/assets/images/cars/tesla-model-3-back.jpg" alt="Tesla Model 3 - Back">
+                    </button>
+                </div>
+            </div>
+
+            <div class="car-detail__info">
+                <div class="car-detail__header">
+                    <div>
+                        <h1>Tesla Model 3 2022</h1>
+                        <div class="car-detail__rating">
+                            <span class="rating">★ 4.9</span>
+                            <span class="reviews">(128 reviews)</span>
+                        </div>
+                        <p class="car-detail__location">London, UK</p>
+                    </div>
+                    <div class="car-detail__price">
+                        <span class="amount">£75</span>
+                        <span class="period">per day</span>
+                    </div>
+                </div>
+
+                <div class="car-detail__features">
+                    <h2>Features</h2>
+                    <div class="features-grid">
+                        <div class="feature">
+                            <span class="feature__icon">⚡</span>
+                            <span class="feature__name">Electric</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature__icon">🚗</span>
+                            <span class="feature__name">Autopilot</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature__icon">👥</span>
+                            <span class="feature__name">5 Seats</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature__icon">🎯</span>
+                            <span class="feature__name">360° Camera</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="car-detail__description">
+                    <h2>Description</h2>
+                    <p>Experience the future of driving with this Tesla Model 3. This all-electric vehicle comes with Autopilot, making your journey safer and more comfortable. Perfect for both city driving and longer trips, with a range of up to 360 miles on a single charge.</p>
+                </div>
+
+                <div class="car-detail__booking">
+                    <h2>Book this car</h2>
+                    <form class="booking-form">
+                        <div class="form-group">
+                            <label for="pickup-date">Pickup Date</label>
+                            <input type="datetime-local" id="pickup-date" required class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="return-date">Return Date</label>
+                            <input type="datetime-local" id="return-date" required class="form-input">
+                        </div>
+                        <div class="booking-summary">
+                            <div class="summary-item">
+                                <span>Daily rate</span>
+                                <span>£75</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Insurance</span>
+                                <span>Included</span>
+                            </div>
+                            <div class="summary-item total">
+                                <span>Total</span>
+                                <span>£75</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--full">Book Now</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <section class="reviews">
+            <div class="reviews__header">
+                <h2>Reviews</h2>
+                <div class="reviews__summary">
+                    <div class="rating-large">4.9</div>
+                    <div class="rating-stars">★★★★★</div>
+                    <div class="rating-count">128 reviews</div>
+                </div>
+            </div>
+
+            <div class="reviews__list">
+                <div class="review">
+                    <div class="review__header">
+                        <div class="review__user">
+                            <div class="user-avatar">JD</div>
+                            <div class="user-info">
+                                <div class="user-name">John Doe</div>
+                                <div class="review-date">2 days ago</div>
+                            </div>
+                        </div>
+                        <div class="review__rating">★★★★★</div>
+                    </div>
+                    <p class="review__text">Amazing car! Super clean and drives like a dream. The autopilot feature made the journey so much more comfortable.</p>
+                </div>
+
+                <!-- More reviews would be populated by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <script src="js/car-detail.js" type="module"></script>
+</body>
+</html> 

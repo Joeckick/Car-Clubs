@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Cars - Car Clubs</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/search.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav__logo">
+                <a href="/">Car Clubs</a>
+            </div>
+            <div class="nav__links">
+                <a href="/browse">Browse Cars</a>
+                <a href="/how-it-works">How it Works</a>
+                <a href="/login" class="btn btn--secondary">Log in</a>
+                <a href="/signup" class="btn btn--primary">Sign up</a>
+            </div>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="search-page">
+        <div class="search-container">
+            <aside class="filters">
+                <div class="filters__header">
+                    <h2>Filters</h2>
+                    <button class="btn btn--text" id="clear-filters">Clear all</button>
+                </div>
+
+                <div class="filter-group">
+                    <h3>Price Range</h3>
+                    <div class="price-range">
+                        <input type="range" id="price-range" min="0" max="200" step="5" value="100">
+                        <div class="price-inputs">
+                            <input type="number" id="min-price" placeholder="Min" min="0">
+                            <span>to</span>
+                            <input type="number" id="max-price" placeholder="Max" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h3>Vehicle Type</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox">
+                            <input type="checkbox" name="type" value="electric">
+                            <span>Electric</span>
+                        </label>
+                        <label class="checkbox">
+                            <input type="checkbox" name="type" value="hybrid">
+                            <span>Hybrid</span>
+                        </label>
+                        <label class="checkbox">
+                            <input type="checkbox" name="type" value="petrol">
+                            <span>Petrol</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <h3>Features</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox">
+                            <input type="checkbox" name="features" value="autopilot">
+                            <span>Autopilot</span>
+                        </label>
+                        <label class="checkbox">
+                            <input type="checkbox" name="features" value="parking">
+                            <span>Parking Assist</span>
+                        </label>
+                        <label class="checkbox">
+                            <input type="checkbox" name="features" value="camera">
+                            <span>Backup Camera</span>
+                        </label>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="results">
+                <div class="results__header">
+                    <div class="results__count">
+                        <h2>Available Cars</h2>
+                        <span id="results-count">8 cars found</span>
+                    </div>
+                    <div class="results__sort">
+                        <label for="sort">Sort by:</label>
+                        <select id="sort" class="sort-select">
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                            <option value="rating">Top Rated</option>
+                            <option value="reviews">Most Reviews</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="car-grid" id="car-results">
+                    <!-- Car cards will be populated by JavaScript -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <template id="car-card-template">
+        <article class="car-card">
+            <div class="car-card__image">
+                <img src="" alt="">
+                <div class="car-card__badge"></div>
+            </div>
+            <div class="car-card__content">
+                <div class="car-card__header">
+                    <h3></h3>
+                    <div class="car-card__rating">
+                        <span class="rating"></span>
+                        <span class="reviews"></span>
+                    </div>
+                </div>
+                <div class="car-card__location"></div>
+                <div class="car-card__features"></div>
+                <div class="car-card__footer">
+                    <div class="car-card__price">
+                        <span class="amount"></span>
+                        <span class="period">per day</span>
+                    </div>
+                    <button class="btn btn--primary">Book Now</button>
+                </div>
+            </div>
+        </article>
+    </template>
+
+    <script src="js/search.js" type="module"></script>
+</body>
+</html> 
