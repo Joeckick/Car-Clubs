@@ -149,15 +149,20 @@ function initializeMap() {
     }
 
     try {
+        // Initialize the map with specific dimensions
+        mapView.style.height = '600px';
+        
         // Initialize the map
         map = L.map(mapView, {
             center: [54.5, -2], // Center of UK
-            zoom: 6
+            zoom: 6,
+            scrollWheelZoom: true
         });
 
-        // Add tile layer
+        // Add tile layer with proper attribution
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
         }).addTo(map);
 
         // Initialize markers layer group
@@ -165,10 +170,14 @@ function initializeMap() {
         
         console.log('Map initialized successfully');
         
-        // If we're in map view, update markers
-        if (activeView === 'map') {
-            updateMapMarkers();
-        }
+        // Force a resize to ensure proper rendering
+        setTimeout(() => {
+            map.invalidateSize();
+            // If we're in map view, update markers
+            if (activeView === 'map') {
+                updateMapMarkers();
+            }
+        }, 100);
     } catch (error) {
         console.error('Error initializing map:', error);
     }
@@ -460,4 +469,119 @@ function renderCars(cars) {
         `;
         carGrid.appendChild(clubElement);
     });
+}
+
+function clearFilters() {
+    // Reset checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    // Reset active filters
+    activeFilters = {
+        priceRange: [
+            Math.min(...sampleCars.map(car => car.price)),
+            Math.max(...sampleCars.map(car => car.price))
+        ],
+        types: [],
+        features: []
+    };
+    
+    // Reset price range inputs
+    const priceRangeInput = document.getElementById('price-range');
+    const maxPriceInput = document.getElementById('max-price');
+    const minPriceInput = document.getElementById('min-price');
+    
+    if (priceRangeInput && maxPriceInput && minPriceInput) {
+        const maxPrice = Math.max(...sampleCars.map(car => car.price));
+        const minPrice = Math.min(...sampleCars.map(car => car.price));
+        
+        priceRangeInput.value = maxPrice;
+        maxPriceInput.value = maxPrice;
+        minPriceInput.value = minPrice;
+    }
+    
+    // Reset to show all cars
+    filteredCars = [...sampleCars];
+    
+    // Update display
+    renderCars(filteredCars);
+    if (activeView === 'map') {
+        updateMapMarkers();
+    }
+}
+
+function handleFilterChange(e) {
+    const checkbox = e.target;
+    const filterType = checkbox.name; // 'type' or 'features'
+    const value = checkbox.value;
+    
+    if (checkbox.checked) {
+        activeFilters[filterType + 's'].push(value);
+    } else {
+        activeFilters[filterType + 's'] = activeFilters[filterType + 's']
+            .filter(item => item !== value);
+    }
+    
+    // Apply filters
+    filteredCars = sampleCars.filter(car => {
+        // Check type filters
+        if (activeFilters.types.length > 0) {
+            const carType = car.features.find(f => ['Electric', 'Hybrid', 'Petrol'].includes(f));
+            if (!activeFilters.types.includes(carType?.toLowerCase())) {
+                return false;
+            }
+        }
+        
+        // Check feature filters
+        if (activeFilters.features.length > 0) {
+            const hasAllFeatures = activeFilters.features.every(feature =>
+                car.features.some(f => f.toLowerCase().includes(feature.toLowerCase()))
+            );
+            if (!hasAllFeatures) {
+                return false;
+            }
+        }
+        
+        // Check price range
+        const price = car.price;
+        return price >= activeFilters.priceRange[0] && price <= activeFilters.priceRange[1];
+    });
+    
+    // Update display
+    renderCars(filteredCars);
+    if (activeView === 'map') {
+        updateMapMarkers();
+    }
+}
+
+function handlePriceRangeChange(e) {
+    const value = parseInt(e.target.value);
+    const isMaxPrice = e.target.id === 'max-price' || e.target.id === 'price-range';
+    
+    if (isMaxPrice) {
+        activeFilters.priceRange[1] = value;
+        // Update both range slider and max price input
+        const maxPriceInput = document.getElementById('max-price');
+        const priceRangeInput = document.getElementById('price-range');
+        if (maxPriceInput) maxPriceInput.value = value;
+        if (priceRangeInput) priceRangeInput.value = value;
+    } else {
+        activeFilters.priceRange[0] = value;
+        // Update min price input
+        const minPriceInput = document.getElementById('min-price');
+        if (minPriceInput) minPriceInput.value = value;
+    }
+    
+    // Apply price filter
+    filteredCars = sampleCars.filter(car => {
+        const price = car.price;
+        return price >= activeFilters.priceRange[0] && price <= activeFilters.priceRange[1];
+    });
+    
+    // Update display
+    renderCars(filteredCars);
+    if (activeView === 'map') {
+        updateMapMarkers();
+    }
 }
