@@ -80,15 +80,28 @@ function loadCarDetails() {
     dailyRate.textContent = `£${car.price}`;
     
     // Update main image and gallery
-    mainImage.src = car.image;
+    mainImage.src = car.images[0];
     mainImage.alt = `${car.make} ${car.model}`;
+    mainImage.onerror = () => {
+        mainImage.src = car.fallbackImage;
+    };
     
-    // Update gallery thumbs (using the same image for now)
-    galleryThumbs.forEach(thumb => {
-        const img = thumb.querySelector('img');
-        img.src = car.image;
-        img.alt = `${car.make} ${car.model}`;
-    });
+    // Update gallery thumbs
+    const galleryThumbsContainer = document.querySelector('.gallery__thumbs');
+    if (galleryThumbsContainer) {
+        galleryThumbsContainer.innerHTML = car.images.map((image, index) => `
+            <button class="gallery__thumb ${index === 0 ? 'active' : ''}" data-index="${index}">
+                <img src="${image}" 
+                     alt="${car.make} ${car.model} - View ${index + 1}"
+                     onerror="this.src='${car.fallbackImage}'">
+            </button>
+        `).join('');
+        
+        // Reattach event listeners to new thumbs
+        document.querySelectorAll('.gallery__thumb').forEach(thumb => {
+            thumb.addEventListener('click', handleGalleryClick);
+        });
+    }
     
     // Update features
     carFeatures.innerHTML = car.features.map(feature => `
@@ -175,7 +188,8 @@ function initializeCarDetail() {
 
 function handleGalleryClick(e) {
     const thumb = e.currentTarget;
-    const newSrc = thumb.querySelector('img').src;
+    const img = thumb.querySelector('img');
+    const newSrc = img.src;
     
     // Update main image
     if (mainImage) {
@@ -183,7 +197,7 @@ function handleGalleryClick(e) {
     }
     
     // Update active state
-    galleryThumbs.forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.gallery__thumb').forEach(t => t.classList.remove('active'));
     thumb.classList.add('active');
 }
 

@@ -226,7 +226,9 @@ try {
                 
                 const popupContent = `
                     <div class="map-info-window">
-                        <img src="${car.image}" alt="${car.make} ${car.model}">
+                        <img src="${car.images[0]}" 
+                             alt="${car.make} ${car.model}"
+                             onerror="this.src='${car.fallbackImage}'">
                         <h3>${car.make} ${car.model}</h3>
                         <p class="price">£${car.price}/day</p>
                         <p class="location">${car.location}</p>
@@ -315,53 +317,116 @@ try {
             const noResults = document.createElement('div');
             noResults.className = 'no-results';
             noResults.innerHTML = `
-                <h3>No cars found</h3>
-                <p>Try adjusting your filters or search criteria</p>
+                <h3>No car clubs found in your area</h3>
+                <p>We're expanding our network! Leave your email to be notified when car clubs become available in your area.</p>
+                <form class="notify-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit" class="btn btn--primary">Notify Me</button>
+                </form>
             `;
             carGrid.appendChild(noResults);
             return;
         }
 
-        cars.forEach((car, index) => {
-            console.log(`Rendering car ${index + 1}/${cars.length}:`, car.make, car.model);
-            const carElement = document.createElement('article');
-            carElement.className = 'car-card';
+        // Group cars by owner/club
+        const carsByClub = cars.reduce((acc, car) => {
+            const clubId = Math.floor(car.id / 5); // Group every 5 cars as a club
+            if (!acc[clubId]) {
+                acc[clubId] = {
+                    name: `Car Club ${clubId}`,
+                    location: car.location,
+                    rating: (4 + (clubId % 10) / 10).toFixed(1),
+                    reviews: 10 + (clubId % 90),
+                    cars: []
+                };
+            }
+            acc[clubId].cars.push(car);
+            return acc;
+        }, {});
+
+        Object.values(carsByClub).forEach(club => {
+            const clubElement = document.createElement('div');
+            clubElement.className = 'club-section';
             
-            carElement.innerHTML = `
-                <div class="car-card__image">
-                    <img src="${car.image}" alt="${car.make} ${car.model}" onerror="this.src='https://via.placeholder.com/300x200?text=Car+Image'">
-                    ${car.features.includes('Electric') 
-                        ? '<div class="car-card__badge">⚡ Electric</div>' 
-                        : car.features.includes('Hybrid')
-                            ? '<div class="car-card__badge">🔋 Hybrid</div>'
-                            : ''}
+            clubElement.innerHTML = `
+                <div class="club-header">
+                    <div class="club-info">
+                        <h2>${club.name}</h2>
+                        <div class="club-rating">
+                            <span class="rating">★ ${club.rating}</span>
+                            <span class="reviews">(${club.reviews} club reviews)</span>
+                        </div>
+                        <p class="club-location">${club.location}</p>
+                    </div>
                 </div>
-                <div class="car-card__content">
-                    <div>
-                        <div class="car-card__header">
-                            <h3>${car.make} ${car.model} ${car.year}</h3>
-                            <div class="car-card__rating">
-                                <span class="rating">★ ${car.rating}</span>
-                                <span class="reviews">(${car.reviews} reviews)</span>
+                <div class="club-cars">
+                    ${club.cars.map(car => `
+                        <article class="car-card">
+                            <div class="car-card__image">
+                                <img src="${car.images[0]}" 
+                                     alt="${car.make} ${car.model}"
+                                     onerror="this.src='${car.fallbackImage}'">
+                                ${car.features.includes('Electric') 
+                                    ? '<div class="car-card__badge">⚡ Electric</div>' 
+                                    : car.features.includes('Hybrid')
+                                        ? '<div class="car-card__badge">🔋 Hybrid</div>'
+                                        : ''}
                             </div>
-                        </div>
-                        <div class="car-card__location">${car.location}</div>
-                        <div class="car-card__features">
-                            ${car.features.map(feature => `<span>${feature}</span>`).join('')}
-                        </div>
-                    </div>
-                    <div class="car-card__footer">
-                        <div class="car-card__price">
-                            <span class="amount">£${car.price}</span>
-                            <span class="period">per day</span>
-                        </div>
-                        <button class="btn btn--primary" onclick="window.location.href='car-detail.html?id=${car.id}'">View Details</button>
-                    </div>
+                            <div class="car-card__content">
+                                <div>
+                                    <div class="car-card__header">
+                                        <h3>${car.make} ${car.model} ${car.year}</h3>
+                                        <div class="car-card__rating">
+                                            <span class="rating">★ ${car.rating}</span>
+                                            <span class="reviews">(${car.reviews} reviews)</span>
+                                        </div>
+                                    </div>
+                                    <div class="car-card__availability">
+                                        Available: ${Math.random() > 0.3 ? 'Now' : 'From tomorrow'}
+                                    </div>
+                                    <div class="car-card__features">
+                                        ${car.features.map(feature => `<span>${feature}</span>`).join('')}
+                                    </div>
+                                </div>
+                                <div class="car-card__footer">
+                                    <div class="car-card__price">
+                                        <span class="amount">£${car.price}</span>
+                                        <span class="period">per day</span>
+                                        <span class="insurance-note">Insurance included</span>
+                                    </div>
+                                    <button class="btn btn--primary" onclick="showAppPrompt()">Book Now</button>
+                                </div>
+                            </div>
+                        </article>
+                    `).join('')}
                 </div>
             `;
             
-            carGrid.appendChild(carElement);
+            carGrid.appendChild(clubElement);
         });
+        
+        // Add app prompt modal to the page
+        if (!document.getElementById('app-prompt')) {
+            const modal = document.createElement('div');
+            modal.id = 'app-prompt';
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h2>Download the Car Clubs App</h2>
+                    <p>To book this car and access all features, please download our mobile app.</p>
+                    <div class="app-buttons">
+                        <a href="#" class="app-button">
+                            <img src="assets/images/app-store.png" alt="Download on the App Store">
+                        </a>
+                        <a href="#" class="app-button">
+                            <img src="assets/images/play-store.png" alt="Get it on Google Play">
+                        </a>
+                    </div>
+                    <button class="modal-close" onclick="hideAppPrompt()">✕</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
         
         console.log('Finished rendering cars');
     }
@@ -467,6 +532,23 @@ try {
         }
     }
 
+    // Add these functions to handle the app prompt
+    window.showAppPrompt = function() {
+        const modal = document.getElementById('app-prompt');
+        if (modal) {
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+    };
+
+    window.hideAppPrompt = function() {
+        const modal = document.getElementById('app-prompt');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    };
+
     // Assign the functions
     renderCars = function(cars) {
         console.log('Rendering cars:', cars.length);
@@ -483,53 +565,116 @@ try {
             const noResults = document.createElement('div');
             noResults.className = 'no-results';
             noResults.innerHTML = `
-                <h3>No cars found</h3>
-                <p>Try adjusting your filters or search criteria</p>
+                <h3>No car clubs found in your area</h3>
+                <p>We're expanding our network! Leave your email to be notified when car clubs become available in your area.</p>
+                <form class="notify-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit" class="btn btn--primary">Notify Me</button>
+                </form>
             `;
             carGrid.appendChild(noResults);
             return;
         }
 
-        cars.forEach((car, index) => {
-            console.log(`Rendering car ${index + 1}/${cars.length}:`, car.make, car.model);
-            const carElement = document.createElement('article');
-            carElement.className = 'car-card';
+        // Group cars by owner/club
+        const carsByClub = cars.reduce((acc, car) => {
+            const clubId = Math.floor(car.id / 5); // Group every 5 cars as a club
+            if (!acc[clubId]) {
+                acc[clubId] = {
+                    name: `Car Club ${clubId}`,
+                    location: car.location,
+                    rating: (4 + (clubId % 10) / 10).toFixed(1),
+                    reviews: 10 + (clubId % 90),
+                    cars: []
+                };
+            }
+            acc[clubId].cars.push(car);
+            return acc;
+        }, {});
+
+        Object.values(carsByClub).forEach(club => {
+            const clubElement = document.createElement('div');
+            clubElement.className = 'club-section';
             
-            carElement.innerHTML = `
-                <div class="car-card__image">
-                    <img src="${car.image}" alt="${car.make} ${car.model}" onerror="this.src='https://via.placeholder.com/300x200?text=Car+Image'">
-                    ${car.features.includes('Electric') 
-                        ? '<div class="car-card__badge">⚡ Electric</div>' 
-                        : car.features.includes('Hybrid')
-                            ? '<div class="car-card__badge">🔋 Hybrid</div>'
-                            : ''}
+            clubElement.innerHTML = `
+                <div class="club-header">
+                    <div class="club-info">
+                        <h2>${club.name}</h2>
+                        <div class="club-rating">
+                            <span class="rating">★ ${club.rating}</span>
+                            <span class="reviews">(${club.reviews} club reviews)</span>
+                        </div>
+                        <p class="club-location">${club.location}</p>
+                    </div>
                 </div>
-                <div class="car-card__content">
-                    <div>
-                        <div class="car-card__header">
-                            <h3>${car.make} ${car.model} ${car.year}</h3>
-                            <div class="car-card__rating">
-                                <span class="rating">★ ${car.rating}</span>
-                                <span class="reviews">(${car.reviews} reviews)</span>
+                <div class="club-cars">
+                    ${club.cars.map(car => `
+                        <article class="car-card">
+                            <div class="car-card__image">
+                                <img src="${car.images[0]}" 
+                                     alt="${car.make} ${car.model}"
+                                     onerror="this.src='${car.fallbackImage}'">
+                                ${car.features.includes('Electric') 
+                                    ? '<div class="car-card__badge">⚡ Electric</div>' 
+                                    : car.features.includes('Hybrid')
+                                        ? '<div class="car-card__badge">🔋 Hybrid</div>'
+                                        : ''}
                             </div>
-                        </div>
-                        <div class="car-card__location">${car.location}</div>
-                        <div class="car-card__features">
-                            ${car.features.map(feature => `<span>${feature}</span>`).join('')}
-                        </div>
-                    </div>
-                    <div class="car-card__footer">
-                        <div class="car-card__price">
-                            <span class="amount">£${car.price}</span>
-                            <span class="period">per day</span>
-                        </div>
-                        <button class="btn btn--primary" onclick="window.location.href='car-detail.html?id=${car.id}'">View Details</button>
-                    </div>
+                            <div class="car-card__content">
+                                <div>
+                                    <div class="car-card__header">
+                                        <h3>${car.make} ${car.model} ${car.year}</h3>
+                                        <div class="car-card__rating">
+                                            <span class="rating">★ ${car.rating}</span>
+                                            <span class="reviews">(${car.reviews} reviews)</span>
+                                        </div>
+                                    </div>
+                                    <div class="car-card__availability">
+                                        Available: ${Math.random() > 0.3 ? 'Now' : 'From tomorrow'}
+                                    </div>
+                                    <div class="car-card__features">
+                                        ${car.features.map(feature => `<span>${feature}</span>`).join('')}
+                                    </div>
+                                </div>
+                                <div class="car-card__footer">
+                                    <div class="car-card__price">
+                                        <span class="amount">£${car.price}</span>
+                                        <span class="period">per day</span>
+                                        <span class="insurance-note">Insurance included</span>
+                                    </div>
+                                    <button class="btn btn--primary" onclick="showAppPrompt()">Book Now</button>
+                                </div>
+                            </div>
+                        </article>
+                    `).join('')}
                 </div>
             `;
             
-            carGrid.appendChild(carElement);
+            carGrid.appendChild(clubElement);
         });
+        
+        // Add app prompt modal to the page
+        if (!document.getElementById('app-prompt')) {
+            const modal = document.createElement('div');
+            modal.id = 'app-prompt';
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h2>Download the Car Clubs App</h2>
+                    <p>To book this car and access all features, please download our mobile app.</p>
+                    <div class="app-buttons">
+                        <a href="#" class="app-button">
+                            <img src="assets/images/app-store.png" alt="Download on the App Store">
+                        </a>
+                        <a href="#" class="app-button">
+                            <img src="assets/images/play-store.png" alt="Get it on Google Play">
+                        </a>
+                    </div>
+                    <button class="modal-close" onclick="hideAppPrompt()">✕</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
         
         console.log('Finished rendering cars');
     };

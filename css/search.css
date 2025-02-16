@@ -396,4 +396,155 @@
     .car-card__price {
         text-align: center;
     }
+}
+
+/* Club sections */
+.club-section {
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+    margin-bottom: var(--spacing-lg);
+    overflow: hidden;
+}
+
+.club-header {
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.club-info h2 {
+    margin: 0 0 var(--spacing-xs);
+    font-size: 1.5rem;
+}
+
+.club-rating {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-xs);
+}
+
+.club-location {
+    color: var(--color-text-light);
+    margin: 0;
+}
+
+.club-cars {
+    padding: var(--spacing-lg);
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+/* Update car card styles */
+.car-card__availability {
+    color: var(--color-success);
+    margin: var(--spacing-xs) 0;
+    font-weight: 500;
+}
+
+.insurance-note {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--color-text-light);
+    margin-top: var(--spacing-xs);
+}
+
+/* App prompt modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
+}
+
+.modal-content {
+    background: var(--color-background);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-xl);
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+    text-align: center;
+}
+
+.modal-content h2 {
+    margin: 0 0 var(--spacing-md);
+}
+
+.app-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    margin-top: var(--spacing-lg);
+}
+
+.app-button {
+    display: block;
+    width: 160px;
+    transition: transform 0.2s ease;
+}
+
+.app-button:hover {
+    transform: scale(1.05);
+}
+
+.app-button img {
+    width: 100%;
+    height: auto;
+}
+
+.modal-close {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--color-text-light);
+    cursor: pointer;
+    padding: var(--spacing-xs);
+    line-height: 1;
+}
+
+/* Notify form */
+.notify-form {
+    display: flex;
+    gap: var(--spacing-sm);
+    max-width: 400px;
+    margin: var(--spacing-md) auto 0;
+}
+
+.notify-form input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+}
+
+/* Responsive updates */
+@media (max-width: 768px) {
+    .club-cars {
+        padding: var(--spacing-md);
+    }
+
+    .app-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .notify-form {
+        flex-direction: column;
+    }
+
+    .notify-form button {
+        width: 100%;
+    }
 } 

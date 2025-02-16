@@ -37,6 +37,7 @@ const features = [
 ];
 
 function generateSampleCars(count) {
+    console.log('Starting to generate sample cars...');
     const cars = [];
     for (let i = 1; i <= count; i++) {
         // Use ID as seed for consistent random generation
@@ -75,8 +76,18 @@ function generateSampleCars(count) {
         // Deterministic rating and reviews
         const rating = (4 + (seed % 10) / 10).toFixed(1);
         const reviews = 50 + (seed % 150);
+
+        // Generate multiple image URLs for each car
+        const baseImageUrl = `https://raw.githubusercontent.com/Joeckick/Car-Clubs/main/assets/images/cars/${makeData.make.toLowerCase()}-${model.toLowerCase().replace(/\s+/g, '-')}`;
+        const images = [
+            `${baseImageUrl}-1.jpg`,
+            `${baseImageUrl}-2.jpg`,
+            `${baseImageUrl}-3.jpg`,
+            `${baseImageUrl}-interior.jpg`
+        ];
         
-        const imagePath = `https://source.unsplash.com/400x300/?car,${makeData.make.toLowerCase()}-${model.toLowerCase().replace(/\s+/g, '-')}`;
+        // Fallback image if the car-specific images don't load
+        const fallbackImage = `https://source.unsplash.com/800x600/?car,${makeData.make.toLowerCase()}-${model.toLowerCase().replace(/\s+/g, '-')}`;
         
         cars.push({
             id: i,
@@ -88,12 +99,16 @@ function generateSampleCars(count) {
             postcode: area,
             areas: city.areas,
             coordinates: { lat, lng },
-            image: imagePath,
+            images: images,
+            fallbackImage: fallbackImage,
             features: carFeatures,
             rating: parseFloat(rating),
             reviews: reviews
         });
     }
+    console.log('Generated sample cars array:', cars);
+    console.log('First car example:', cars[0]);
+    console.log('Total cars generated:', cars.length);
     return cars;
 }
 
