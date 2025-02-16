@@ -78,16 +78,16 @@ function generateSampleCars(count) {
         const reviews = 50 + (seed % 150);
 
         // Generate multiple image URLs for each car
-        const baseImageUrl = `https://raw.githubusercontent.com/Joeckick/Car-Clubs/main/assets/images/cars/${makeData.make.toLowerCase()}-${model.toLowerCase().replace(/\s+/g, '-')}`;
+        const baseImageUrl = `https://source.unsplash.com/800x600/?car,${makeData.make.toLowerCase()}-${model.toLowerCase().replace(/\s+/g, '-')}`;
         const images = [
-            `${baseImageUrl}-1.jpg`,
-            `${baseImageUrl}-2.jpg`,
-            `${baseImageUrl}-3.jpg`,
-            `${baseImageUrl}-interior.jpg`
+            `https://source.unsplash.com/800x600/?${makeData.make.toLowerCase()}-${model.toLowerCase().replace(/\s+/g, '-')},car`,
+            `https://source.unsplash.com/800x600/?${makeData.make.toLowerCase()},car-interior`,
+            `https://source.unsplash.com/800x600/?${model.toLowerCase().replace(/\s+/g, '-')},car`,
+            `https://source.unsplash.com/800x600/?luxury,car`
         ];
         
         // Fallback image if the car-specific images don't load
-        const fallbackImage = `https://source.unsplash.com/800x600/?car,${makeData.make.toLowerCase()}-${model.toLowerCase().replace(/\s+/g, '-')}`;
+        const fallbackImage = `https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80`;
         
         cars.push({
             id: i,

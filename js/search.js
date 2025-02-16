@@ -30,6 +30,47 @@ let activeFilters = {
     features: []
 };
 
+// Functions
+function clearFilters() {
+    // Reset checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    // Reset active filters
+    activeFilters = {
+        priceRange: [
+            Math.min(...sampleCars.map(car => car.price)),
+            Math.max(...sampleCars.map(car => car.price))
+        ],
+        types: [],
+        features: []
+    };
+    
+    // Reset price range inputs
+    const priceRangeInput = document.getElementById('price-range');
+    const maxPriceInput = document.getElementById('max-price');
+    const minPriceInput = document.getElementById('min-price');
+    
+    if (priceRangeInput && maxPriceInput && minPriceInput) {
+        const maxPrice = Math.max(...sampleCars.map(car => car.price));
+        const minPrice = Math.min(...sampleCars.map(car => car.price));
+        
+        priceRangeInput.value = maxPrice;
+        maxPriceInput.value = maxPrice;
+        minPriceInput.value = minPrice;
+    }
+    
+    // Reset to show all cars
+    filteredCars = [...sampleCars];
+    
+    // Update display
+    renderCars(filteredCars);
+    if (activeView === 'map') {
+        updateMapMarkers();
+    }
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM Content Loaded in search.js');
@@ -149,20 +190,23 @@ function initializeMap() {
     }
 
     try {
-        // Initialize the map with specific dimensions
+        // Set explicit height and ensure the container is visible
         mapView.style.height = '600px';
+        mapView.style.display = 'block';
         
-        // Initialize the map
+        // Initialize the map with specific options
         map = L.map(mapView, {
             center: [54.5, -2], // Center of UK
             zoom: 6,
-            scrollWheelZoom: true
+            scrollWheelZoom: true,
+            zoomControl: true
         });
 
         // Add tile layer with proper attribution
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors',
-            maxZoom: 19
+            maxZoom: 19,
+            minZoom: 3
         }).addTo(map);
 
         // Initialize markers layer group
@@ -170,14 +214,14 @@ function initializeMap() {
         
         console.log('Map initialized successfully');
         
-        // Force a resize to ensure proper rendering
+        // Force a resize after a short delay to ensure proper rendering
         setTimeout(() => {
             map.invalidateSize();
             // If we're in map view, update markers
             if (activeView === 'map') {
                 updateMapMarkers();
             }
-        }, 100);
+        }, 250);
     } catch (error) {
         console.error('Error initializing map:', error);
     }
@@ -469,46 +513,6 @@ function renderCars(cars) {
         `;
         carGrid.appendChild(clubElement);
     });
-}
-
-function clearFilters() {
-    // Reset checkboxes
-    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.checked = false;
-    });
-    
-    // Reset active filters
-    activeFilters = {
-        priceRange: [
-            Math.min(...sampleCars.map(car => car.price)),
-            Math.max(...sampleCars.map(car => car.price))
-        ],
-        types: [],
-        features: []
-    };
-    
-    // Reset price range inputs
-    const priceRangeInput = document.getElementById('price-range');
-    const maxPriceInput = document.getElementById('max-price');
-    const minPriceInput = document.getElementById('min-price');
-    
-    if (priceRangeInput && maxPriceInput && minPriceInput) {
-        const maxPrice = Math.max(...sampleCars.map(car => car.price));
-        const minPrice = Math.min(...sampleCars.map(car => car.price));
-        
-        priceRangeInput.value = maxPrice;
-        maxPriceInput.value = maxPrice;
-        minPriceInput.value = minPrice;
-    }
-    
-    // Reset to show all cars
-    filteredCars = [...sampleCars];
-    
-    // Update display
-    renderCars(filteredCars);
-    if (activeView === 'map') {
-        updateMapMarkers();
-    }
 }
 
 function handleFilterChange(e) {
